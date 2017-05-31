@@ -20,7 +20,8 @@
             android:name=".VistaRecetas"
             android:label="@string/title_activity_vista_recetas"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NuevaReceta"></activity>
+        <activity android:name=".NuevaReceta" />
+        <activity android:name=".Splash"></activity>
     </application>
 
 </manifest>

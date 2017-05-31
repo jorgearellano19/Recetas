@@ -5,17 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 
-public class MainActivity extends AppCompatActivity {
+public class Splash extends AppCompatActivity {
     ProgressBar pb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splash);
         pb=(ProgressBar)findViewById(R.id.progressBar);
         new Thread(new Runnable() {
             public void run() {
                 doWork();
-                MainActivity.this.finish();
+                Splash.this.finish();
                 ventanaPrincipal();
             }
         }).start();
@@ -30,8 +30,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     private void ventanaPrincipal(){
-        Intent v= new Intent(this, VistaRecetas.class);
+        Intent v= new Intent(this, MainActivity.class);
         startActivity(v);
     }
 }
