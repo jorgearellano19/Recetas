@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -76,6 +77,7 @@ public class NuevaReceta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 agregarReceta();
+                openWindow();
             }
         });
 
@@ -112,69 +114,15 @@ public class NuevaReceta extends AppCompatActivity {
         String url = "http://ealejandrocasillas.96.lt/recetas/foto.php";
         for (int i=0;i<imagesInByte.size();i++) {
             HashMap<String, String> params = new HashMap<String, String>();
-            params.put("id_receta",idMax+1+"");
-            Blob blob = new Blob() {
-                @Override
-                public long length() throws SQLException {
-                    return 0;
-                }
+            params.put("id_receta",(idMax+2)+"");
+            String s = imagesInByte.get(i).toString();
 
-                @Override
-                public byte[] getBytes(long pos, int length) throws SQLException {
-                    return new byte[0];
-                }
+            String encoded = Base64.encodeToString(imagesInByte.get(i), Base64.DEFAULT);
 
-                @Override
-                public InputStream getBinaryStream() throws SQLException {
-                    return null;
-                }
+            //Blob fileBlob = new javax.sql.rowset.serial.SerialBlob(byteArray);
 
-                @Override
-                public long position(byte[] pattern, long start) throws SQLException {
-                    return 0;
-                }
+            params.put("imagen",encoded);
 
-                @Override
-                public long position(Blob pattern, long start) throws SQLException {
-                    return 0;
-                }
-
-                @Override
-                public int setBytes(long pos, byte[] bytes) throws SQLException {
-                    return 0;
-                }
-
-                @Override
-                public int setBytes(long pos, byte[] bytes, int offset, int len) throws SQLException {
-                    return 0;
-                }
-
-                @Override
-                public OutputStream setBinaryStream(long pos) throws SQLException {
-                    return null;
-                }
-
-                @Override
-                public void truncate(long len) throws SQLException {
-
-                }
-
-                @Override
-                public void free() throws SQLException {
-
-                }
-
-                @Override
-                public InputStream getBinaryStream(long pos, long length) throws SQLException {
-                    return null;
-                }
-            };
-            try {
-                blob.setBytes(1, imagesInByte.get(i));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            params.put("imagen",blob.toString());
             JSONObject jsonObject = new JSONObject(params);
             JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                     new Response.Listener<JSONObject>() {
@@ -329,13 +277,32 @@ public class NuevaReceta extends AppCompatActivity {
         if(requestCode==1 && resultCode==RESULT_OK){
             Bundle extras = data.getExtras();
             Bitmap photo = (Bitmap) extras.get("data");
-            ImageView imageView = new ImageView(this);
-            imageView.setImageBitmap(photo);
+
             byte[] imageByte = DbBitmapUtility.getBytes(photo);
             Log.e("Byte 1",imageByte+"");
             imagesInByte.add(imageByte);
-            images.addView(imageView);
+
+            ImageView img = newImageView();
+            img.setImageBitmap(photo);
+            images.addView(img);
+
+
         }
+    }
+    public void openWindow(){
+        Intent ventana= new Intent(NuevaReceta.this,VistaRecetas.class);
+        startActivity(ventana);
+        finish();
+    }
+
+    private ImageView newImageView(){
+        ImageView iv = new ImageView(this);
+        int width = 800;//ancho
+        int height =600;//altura
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
+        parms.setMargins(0,0,5,0);
+        iv.setLayoutParams(parms);
+        return iv;
     }
 
 }

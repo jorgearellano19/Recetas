@@ -21,6 +21,8 @@
             android:label="@string/title_activity_vista_recetas"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NuevaReceta" />
+        <activity android:name=".DetalleReceta" />
+
         <activity android:name=".Splash"></activity>
     </application>
 
