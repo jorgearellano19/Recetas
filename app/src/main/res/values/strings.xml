@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TPDM_U4_FinalProject</string>
+    <string name="app_name">Recetario</string>
     <string name="title_activity_view">View</string>
     <string name="title_activity_vista_recetas">VistaRecetas</string>
 </resources>
