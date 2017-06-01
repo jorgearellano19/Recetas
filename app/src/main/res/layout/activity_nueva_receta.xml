@@ -3,15 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
     tools:context="mx.edu.ittepic.tpdm_u4_finalproject.NuevaReceta">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="453dp">
+        android:layout_height="188dp"
+        android:layout_weight="0.96">
 
         <LinearLayout
+            android:padding="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -92,6 +95,9 @@
         android:layout_weight="1"
         android:clickable="true"
         app:fabSize="mini"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        app:srcCompat="@android:drawable/ic_menu_camera" 
+        android:layout_margin="@dimen/fab_margin"
+        android:background="#d92b2b" />
+
 
 </LinearLayout>

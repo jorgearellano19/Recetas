@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="mx.edu.ittepic.tpdm_u4_finalproject.VistaRecetas">
+    tools:context="mx.edu.ittepic.tpdm_u4_finalproject.VistaRecetas"
+    android:weightSum="1">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,6 +22,13 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="391dp"
+        android:layout_weight="0.76" />
+
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -30,9 +38,5 @@
         android:background="#d92b2b"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </LinearLayout>
