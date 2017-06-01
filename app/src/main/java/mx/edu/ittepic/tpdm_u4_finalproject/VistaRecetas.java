@@ -56,7 +56,9 @@ public class VistaRecetas extends AppCompatActivity {
     }
     public void abrirVentanta(){
         Intent nueva= new Intent(VistaRecetas.this,NuevaReceta.class);
-        startActivity(nueva);
+        Bundle b = new Bundle();
+        b.putInt("idMax",recetas.size()-1);
+        nueva.putExtras(b);startActivity(nueva);
     }
     public void get(){
         recetas.clear();
