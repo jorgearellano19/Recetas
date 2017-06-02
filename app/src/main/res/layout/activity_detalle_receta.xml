@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:padding="20sp"
+    android:padding="20dp"
     tools:context="mx.edu.ittepic.tpdm_u4_finalproject.NuevaReceta"
     android:weightSum="1">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/textView5"
@@ -85,7 +89,7 @@
 
     <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="141dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/images"
@@ -118,5 +122,7 @@
 
     </LinearLayout>
 
+    </LinearLayout>
 
-</LinearLayout>
+
+</ScrollView>

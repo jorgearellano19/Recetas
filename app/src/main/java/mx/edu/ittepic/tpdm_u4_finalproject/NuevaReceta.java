@@ -44,6 +44,7 @@ import java.sql.*;
 
 public class NuevaReceta extends AppCompatActivity {
     RequestQueue queue;
+    ArrayAdapter<String> categorylist;
     ArrayList<String> categorias = new ArrayList<String>();
     ArrayList<String> catId = new ArrayList<String>();
     Spinner spinner;
@@ -52,23 +53,31 @@ public class NuevaReceta extends AppCompatActivity {
     FloatingActionButton fab;
     LinearLayout images;
     ArrayList<byte[]> imagesInByte = new ArrayList();
-    int idMax;
+    String idMax;
+    String id;
+    boolean insert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        idMax = intent.getExtras().getInt("idMax");
-        Log.e("Num receta max",idMax+"");
         setContentView(R.layout.activity_nueva_receta);
+        Intent intent = getIntent();
         queue = Volley.newRequestQueue(this); // this = context
-        spinner = (Spinner) findViewById(R.id.spinner);
-        getCategoria();
-        añadir = (Button) findViewById(R.id.button);
+        insert = true;
         nombre = (EditText) findViewById(R.id.editText2);
         ingredientes = (EditText) findViewById(R.id.editText3);
         procedimiento = (EditText) findViewById(R.id.editText4);
         dificultad=(EditText)findViewById(R.id.editText5);
+        spinner = (Spinner) findViewById(R.id.spinner);
+        getCategoria();
+        if(!(intent.getExtras().getSerializable("id")==null)) {
+            putValues(intent);
+            id = intent.getExtras().getSerializable("id").toString();
+            insert = false;
+        }
+
+        añadir = (Button) findViewById(R.id.button);
+
         nueva = (Button) findViewById(R.id.button3);
         images = (LinearLayout)findViewById(R.id.images);
         fab = (FloatingActionButton)findViewById(R.id.fabCamera);
@@ -76,7 +85,12 @@ public class NuevaReceta extends AppCompatActivity {
         nueva.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                agregarReceta();
+                if(insert) {
+                    agregarReceta();
+                }
+                else {
+                    actualizarReceta();
+                }
                 openWindow();
             }
         });
@@ -98,6 +112,24 @@ public class NuevaReceta extends AppCompatActivity {
         });
     }
 
+    private void putValues(Intent v) {
+        nombre.setText(v.getExtras().getSerializable("nombre").toString());
+        ingredientes.setText(v.getExtras().getSerializable("ingredientes").toString());
+        procedimiento.setText(v.getExtras().getSerializable("descripcion").toString());
+        dificultad.setText(v.getExtras().getSerializable("dificultad").toString());
+
+        spinner.setSelection(Integer.parseInt(v.getExtras().getSerializable("categoria").toString()));
+
+    }
+
+    private void actualizarReceta(){
+        int cat = (int)spinner.getSelectedItemId();
+        String cate = catId.get(cat);
+        Log.e("cate ",cate+ "   "+cat);
+        updateReceta(nombre.getText().toString(), cate, procedimiento.getText().toString(), ingredientes.getText().toString(),
+                dificultad.getText().toString());
+    }
+
     private void agregarReceta(){
         String n = nombre.getText().toString();
         String ing = ingredientes.getText().toString();
@@ -105,16 +137,16 @@ public class NuevaReceta extends AppCompatActivity {
         String dif=dificultad.getText().toString();
         int cat = (int)spinner.getSelectedItemId();
         String cate = catId.get(cat);
-        postReceta(n, cate, ing, proc,dif);
+        Log.e("cate ",cate+ "   "+cat);
+        postReceta(n, cate, proc, ing,dif);
 
-        postFotos();
+
     }
 
     private void postFotos() {
         String url = "http://ealejandrocasillas.96.lt/recetas/foto.php";
         for (int i=0;i<imagesInByte.size();i++) {
             HashMap<String, String> params = new HashMap<String, String>();
-            params.put("id_receta",(idMax+2)+"");
             String s = imagesInByte.get(i).toString();
 
             String encoded = Base64.encodeToString(imagesInByte.get(i), Base64.DEFAULT);
@@ -122,6 +154,7 @@ public class NuevaReceta extends AppCompatActivity {
             //Blob fileBlob = new javax.sql.rowset.serial.SerialBlob(byteArray);
 
             params.put("imagen",encoded);
+            params.put("id_receta", idMax);
 
             JSONObject jsonObject = new JSONObject(params);
             JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
@@ -211,7 +244,7 @@ public class NuevaReceta extends AppCompatActivity {
     }
 
     private void updateSpinner() {
-        ArrayAdapter<String> categorylist = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categorias);
+        categorylist = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categorias);
         spinner.setAdapter(categorylist);
     }
 
@@ -229,7 +262,15 @@ public class NuevaReceta extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         // response
+                        Log.e("resp", response.toString());
                         VolleyLog.v("jorch", response.toString());
+                        try {
+                            idMax = response.getString("id");
+                            Log.e("resp", idMax);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        postFotos();
                     }
                 },
                 new Response.ErrorListener() {
@@ -298,11 +339,40 @@ public class NuevaReceta extends AppCompatActivity {
     private ImageView newImageView(){
         ImageView iv = new ImageView(this);
         int width = 800;//ancho
-        int height =600;//altura
+        int height =1000;//altura
         LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
-        parms.setMargins(0,0,5,0);
+        parms.setMargins(0,0,0,0);
         iv.setLayoutParams(parms);
         return iv;
+    }
+
+    public void updateReceta(String nombre, String categoria, String descripcion, String ingredientes,String dificultad){
+        String url = "http://ealejandrocasillas.96.lt/recetas/receta.php?id=" + id;
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("id_categoria", categoria);
+        params.put("nombre", nombre);
+        params.put("descripcion", descripcion);
+        params.put("ingredientes", ingredientes);
+        params.put("dificultad", dificultad);
+        JSONObject jsonObject = new JSONObject(params);
+        JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.PUT, url, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // response
+                        VolleyLog.v("jorch", response.toString());
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        );
+        queue.add(putRequest);
     }
 
 }

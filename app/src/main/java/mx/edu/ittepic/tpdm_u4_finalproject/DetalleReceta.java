@@ -49,6 +49,7 @@ public class DetalleReceta extends AppCompatActivity {
         r_id = this.getIntent().getExtras().getSerializable("id").toString();
         n=this.getIntent().getExtras().getSerializable("nombre").toString();
         c_id=this.getIntent().getExtras().getSerializable("categoria").toString();
+        Log.e("ID category",c_id);
         d=this.getIntent().getExtras().getSerializable("dificultad").toString();
         i=this.getIntent().getExtras().getSerializable("ingredientes").toString();
         des=this.getIntent().getExtras().getSerializable("descripcion").toString();
@@ -95,6 +96,12 @@ public class DetalleReceta extends AppCompatActivity {
 
     public void openActualizar(){
         Intent v = new Intent(DetalleReceta.this, NuevaReceta.class);
+        v.putExtra("id",r_id);
+        v.putExtra("nombre",n);
+        v.putExtra("categoria",c_id);
+        v.putExtra("dificultad",d);
+        v.putExtra("ingredientes",i);
+        v.putExtra("descripcion",des);
         startActivity(v);
         finish();
     }
@@ -145,6 +152,7 @@ public class DetalleReceta extends AppCompatActivity {
                                 String id = category.getString("id");
                                 if(c_id.equals(id)){
                                     categoryContent=cat;
+                                    categoria.setText(categoryContent);
                                 }
                                 Log.e("cat", cat);
                             }
@@ -222,8 +230,8 @@ public class DetalleReceta extends AppCompatActivity {
 
     private ImageView newImageView(){
         ImageView iv = new ImageView(this);
-        int width = 600;//ancho
-        int height =600;//altura
+        int width = 800;//ancho
+        int height =1000;//altura
         LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width,height);
         parms.setMargins(0,0,0,0);
         iv.setLayoutParams(parms);
